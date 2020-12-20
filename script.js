@@ -6,8 +6,8 @@ $(document).ready(function () {
         temp.val(value);
     }
 
-window.onload = function() {
-    var x = document.getElementById("date");
+$(document).onload(function () {
+    var x = document.getElementById("demo");
     x.onclick = function () {
         document.body.innerHTML = Date();
     }
