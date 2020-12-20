@@ -4,10 +4,10 @@ body {
   line-height: 1;
 }
 
-.date {
- color:blue;
- border-left: 1px solid black
- font-size: 16px
+window.onload = function() {
+    var x = document.getElementById("demo");
+    x.onclick = function () {
+        document.body.innerHTML = Date();
 }
 
 textarea{
