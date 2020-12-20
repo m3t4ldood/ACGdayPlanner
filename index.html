@@ -16,9 +16,8 @@
 <body>
   <header class="jumbotron">
     <h1 class="display-3">Work Day Scheduler</h1>
-    <p class="lead">A simple calendar app for scheduling your work day</p>
-    let [month, date, year]    = new Date().toLocaleDateString("en-US").split("/")
-let [hour, minute, second] = new Date().toLocaleTimeString("en-US").split(/:| /)
+    <p>A simple calendar app</p>
+    <div id="date">todays date</div>
   </header>
   <div class="container-fluid" id="plannerContainer">
     <div class="tab-content">
