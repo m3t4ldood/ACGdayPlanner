@@ -5,6 +5,13 @@ $(document).ready(function () {
         var temp = $("#" + keys[i]).find("textarea")
         temp.val(value);
     }
+
+window.onload = function() {
+    var x = document.getElementById("date");
+    x.onclick = function () {
+        document.body.innerHTML = Date();
+    }
+};
     $(".saveBtn").on("click", function (event) {
         event.preventDefault();
         console.log(this);
