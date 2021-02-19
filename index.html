@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -11,21 +12,27 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <title>ACG dayPlanner</title>
+
 </head>
 
 <body>
+
   <header class="jumbotron">
     <h1 class="display-3">Work Day Scheduler</h1>
-    <p>A simple calendar app</p>
-    <div class="demo">todays date</div>
+    <p>A simple day planner app</p>
+    <!-- display current date and time * seconds are not updating automatically -->
+    <p>Date/Time: <span id="datetime"></span></p>
+    <script> var dt = new Date();
+      document.getElementById("datetime").innerHTML = dt.toLocaleString();</script>
   </header>
+
   <div class="container-fluid" id="plannerContainer">
     <div class="tab-content">
-  <div class="tab-pane fade show active" id="home" role="tabpanel">.show</div>
-  <div class="tab-pane fade" id="profile" role="tabpanel">...</div>
-  <div class="tab-pane fade" id="messages" role="tabpanel">...</div>
-  <div class="tab-pane fade" id="settings" role="tabpanel">...</div>
-</div>
+      <div class="tab-pane fade show active" id="home" role="tabpanel">.show</div>
+      <div class="tab-pane fade" id="profile" role="tabpanel">...</div>
+      <div class="tab-pane fade" id="messages" role="tabpanel">...</div>
+      <div class="tab-pane fade" id="settings" role="tabpanel">...</div>
+    </div>
     <!-- time blocks go here -->
   </div>
   <div class="time-slot">
@@ -34,60 +41,69 @@
     <div class="saveBtn" id="6am"><i class="fas fa-save"></i></div>
   </div>
   <div class="time-slot">
-   <div class="time">7:00 AM</div>
+    <div class="time">7:00 AM</div>
     <textarea class="content" id="7am"></textarea>
-   <div class="saveBtn" id="7am"><i class="fas fa-save"></i></div>
-   </div>
-   <div class="time-slot">
+    <div class="saveBtn" id="7am"><i class="fas fa-save"></i></div>
+  </div>
+  <div class="time-slot">
     <div class="time">8:00 AM</div>
-     <textarea class="content" id="8am"></textarea>
+    <textarea class="content" id="8am"></textarea>
     <div class="saveBtn" id="8am"><i class="fas fa-save"></i></div>
   </div>
-   </div><div class="time-slot">
+  </div>
+  <div class="time-slot">
     <div class="time">9:00 AM</div>
-     <textarea class="content" id="9am"></textarea>
+    <textarea class="content" id="9am"></textarea>
     <div class="saveBtn" id="9am"><i class="fas fa-save"></i></div>
   </div>
-   </div><div class="time-slot">
+  </div>
+  <div class="time-slot">
     <div class="time">10:00 AM</div>
-     <textarea class="content" id="10am"></textarea>
+    <textarea class="content" id="10am"></textarea>
     <div class="saveBtn" id="10am"><i class="fas fa-save"></i></div>
   </div>
-   </div><div class="time-slot">
+  </div>
+  <div class="time-slot">
     <div class="time">11:00 AM</div>
-     <textarea class="content" id="11am"></textarea>
+    <textarea class="content" id="11am"></textarea>
     <div class="saveBtn" id="11am"><i class="fas fa-save"></i></div>
   </div>
-   </div><div class="time-slot">
+  </div>
+  <div class="time-slot">
     <div class="time">12:00 AM</div>
-     <textarea class="content" id="12am"></textarea>
+    <textarea class="content" id="12am"></textarea>
     <div class="saveBtn" id="12am"><i class="fas fa-save"></i></div>
   </div>
-   </div><div class="time-slot">
+  </div>
+  <div class="time-slot">
     <div class="time">1:00 PM</div>
-     <textarea class="content" id="1pm"></textarea>
+    <textarea class="content" id="1pm"></textarea>
     <div class="saveBtn" id="1pm"><i class="fas fa-save"></i></div>
   </div>
-   </div><div class="time-slot">
+  </div>
+  <div class="time-slot">
     <div class="time">2:00 PM</div>
-     <textarea class="content" id="2pm"></textarea>
+    <textarea class="content" id="2pm"></textarea>
     <div class="saveBtn" id="2pm"><i class="fas fa-save"></i></div>
   </div>
-   </div><div class="time-slot">
+  </div>
+  <div class="time-slot">
     <div class="time">3:00 PM</div>
-     <textarea class="content" id="3pm"></textarea>
+    <textarea class="content" id="3pm"></textarea>
     <div class="saveBtn" id="3pm"><i class="fas fa-save"></i></div>
-   </div>
-    </div><div class="time-slot">
+  </div>
+  </div>
+  <div class="time-slot">
     <div class="time">4:00 PM</div>
-     <textarea class="content" id="4pm"></textarea>
+    <textarea class="content" id="4pm"></textarea>
     <div class="saveBtn" id="4pm"><i class="fas fa-save"></i></div>
-   </div>
-    </div><div class="time-slot">
+  </div>
+  </div>
+  <div class="time-slot">
     <div class="time">5:00 PM</div>
-     <textarea class="content" id="5pm"></textarea>
+    <textarea class="content" id="5pm"></textarea>
     <div class="saveBtn" id="5pm"><i class="fas fa-save"></i></div>
-   </div>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 </body>
