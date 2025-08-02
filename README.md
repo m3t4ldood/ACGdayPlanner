@@ -1,2 +1,2 @@
 # ACGdayPlanner
-Https://M3t4ldooD.github.io/ACGdayPlanner
+[https://m3t4ldood.github.io/AcgDayPlanner/]
