@@ -30,7 +30,7 @@
       font-weight: bold;
     }
 
-    .day-buttons {
+    .day-buttons, .top-actions {
       margin-top: 15px;
       display: flex;
       justify-content: center;
@@ -38,7 +38,7 @@
       gap: 10px;
     }
 
-    .day-buttons button {
+    .day-buttons button, .top-actions button {
       background-color: #1a1a3c;
       color: #00ffff;
       border: 1px solid #00ffff55;
@@ -55,9 +55,24 @@
       border-color: #00ffff;
     }
 
-    .day-buttons button:hover {
+    .day-buttons button:hover, .top-actions button:hover {
       background-color: #00ffff33;
       color: #ffffff;
+    }
+
+    .search-bar {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .search-bar input {
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+      width: 80%;
+      max-width: 400px;
+      background-color: #2c2c5a;
+      color: #fff;
     }
 
     .time-slot {
@@ -69,13 +84,19 @@
       border-radius: 8px;
       padding: 10px;
       box-shadow: 0 0 6px #00ffff22;
+      transition: background-color 0.3s ease;
     }
 
+    .time-slot.past { opacity: 0.5; }
+    .time-slot.present { background-color: #004d4d; }
+    .time-slot.future { background-color: #0b2b4d; }
+
     .time {
-      flex: 0 0 120px;
+      flex: 0 0 100px;
       color: #ffffff;
       font-weight: bold;
       text-align: center;
+      font-size: 0.9rem;
     }
 
     textarea.content {
@@ -102,17 +123,30 @@
       user-select: none;
       padding: 8px 0;
       border-radius: 5px;
+      position: relative;
     }
 
     .saveBtn:hover {
       color: #ffffff;
       background-color: #00ffff33;
     }
+
+    .saveMsg {
+      position: absolute;
+      top: -20px;
+      right: 0;
+      font-size: 0.7rem;
+      color: #00ffcc;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .saveMsg.show { opacity: 1; }
   </style>
 </head>
 <body>
   <header class="jumbotron">
-    <h1 class="display-3">Work Day Scheduler</h1>
+    <h1>Work Day Scheduler</h1>
     <p>A simple day planner app</p>
     <p>Date/Time: <span id="datetime"></span></p>
     <div class="day-buttons">
@@ -124,56 +158,99 @@
       <button data-day="Friday">Friday</button>
       <button data-day="Saturday">Saturday</button>
     </div>
+    <div class="top-actions">
+      <button id="clearDay"><i class="fas fa-trash"></i> Clear Day</button>
+      <button id="exportData"><i class="fas fa-file-export"></i> Export</button>
+      <button id="importData"><i class="fas fa-file-import"></i> Import</button>
+      <button id="toggleTheme"><i class="fas fa-adjust"></i> Toggle Theme</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchBox" placeholder="Search notes...">
+    </div>
   </header>
 
   <div id="plannerContainer"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script>
     const startHour = 3;
     const endHour = 22;
-    let currentDay = null;
+    let currentDay = localStorage.getItem('lastDay') || null;
+    let darkMode = true;
+    const storageKey = "plannerData";
+
+    function initPlannerData() {
+      let data = JSON.parse(localStorage.getItem(storageKey)) || {};
+      const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      days.forEach(day => {
+        if (!data[day]) {
+          data[day] = {};
+          for (let h = startHour; h <= endHour; h++) {
+            const hour12 = h % 12 === 0 ? 12 : h % 12;
+            const suffix = h >= 12 ? "PM" : "AM";
+            data[day][`${hour12}${suffix.toLowerCase()}`] = "";
+          }
+        }
+      });
+      localStorage.setItem(storageKey, JSON.stringify(data));
+    }
+
+    function getPlannerData() {
+      return JSON.parse(localStorage.getItem(storageKey));
+    }
+
+    function savePlannerData(data) {
+      localStorage.setItem(storageKey, JSON.stringify(data));
+    }
 
     function updateDateTime() {
-      const now = new Date();
-      document.getElementById('datetime').textContent = now.toLocaleString();
+      document.getElementById('datetime').textContent = new Date().toLocaleString();
     }
     setInterval(updateDateTime, 1000);
     updateDateTime();
 
+    function getTimeClass(hour) {
+      const currentHour = new Date().getHours();
+      if (hour < currentHour) return 'past';
+      if (hour === currentHour) return 'present';
+      return 'future';
+    }
+
     function renderPlanner(day) {
       const container = document.getElementById('plannerContainer');
       container.innerHTML = '';
+      const data = getPlannerData();
 
       for (let h = startHour; h <= endHour; h++) {
         const isPM = h >= 12;
         const hour12 = h % 12 === 0 ? 12 : h % 12;
         const suffix = isPM ? 'PM' : 'AM';
-        const timeLabel = `${hour12}:00 ${suffix}`;
         const timeId = `${hour12}${suffix.toLowerCase()}`;
-
-        const fullKey = `${day}_${timeId}`;
-        const savedValue = localStorage.getItem(fullKey) || '';
+        const savedValue = data[day][timeId] || '';
 
         const slot = document.createElement('div');
-        slot.className = 'time-slot';
+        slot.className = `time-slot ${getTimeClass(h)}`;
 
         const timeDiv = document.createElement('div');
         timeDiv.className = 'time';
-        timeDiv.textContent = timeLabel;
+        timeDiv.textContent = `${hour12}:00 ${suffix}`;
 
         const textarea = document.createElement('textarea');
         textarea.className = 'content';
-        textarea.id = fullKey;
         textarea.value = savedValue;
+        textarea.addEventListener('input', () => {
+          data[day][timeId] = textarea.value;
+          savePlannerData(data);
+        });
 
         const saveBtn = document.createElement('div');
         saveBtn.className = 'saveBtn';
-        saveBtn.innerHTML = '<i class="fas fa-save"></i>';
+        saveBtn.innerHTML = '<i class="fas fa-save"></i><span class="saveMsg">Saved!</span>';
         saveBtn.onclick = function () {
-          localStorage.setItem(fullKey, textarea.value);
-          saveBtn.style.opacity = '0.6';
-          setTimeout(() => saveBtn.style.opacity = '1', 200);
+          data[day][timeId] = textarea.value;
+          savePlannerData(data);
+          const msg = saveBtn.querySelector('.saveMsg');
+          msg.classList.add('show');
+          setTimeout(() => msg.classList.remove('show'), 800);
         };
 
         slot.appendChild(timeDiv);
@@ -188,14 +265,67 @@
         document.querySelectorAll('.day-buttons button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentDay = btn.getAttribute('data-day');
+        localStorage.setItem('lastDay', currentDay);
         renderPlanner(currentDay);
       });
     });
 
-    // Default to today
-    const todayIndex = new Date().getDay();
-    const todayButton = document.querySelectorAll('.day-buttons button')[todayIndex];
-    todayButton.click();
+    document.getElementById('clearDay').addEventListener('click', () => {
+      if (!currentDay) return;
+      if (confirm(`Clear all entries for ${currentDay}?`)) {
+        const data = getPlannerData();
+        Object.keys(data[currentDay]).forEach(key => data[currentDay][key] = "");
+        savePlannerData(data);
+        renderPlanner(currentDay);
+      }
+    });
+
+    document.getElementById('exportData').addEventListener('click', () => {
+      const data = getPlannerData();
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'plannerData.json';
+      a.click();
+    });
+
+    document.getElementById('importData').addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = e => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = event => {
+          const importedData = JSON.parse(event.target.result);
+          savePlannerData(importedData);
+          if (currentDay) renderPlanner(currentDay);
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    });
+
+    document.getElementById('toggleTheme').addEventListener('click', () => {
+      darkMode = !darkMode;
+      document.body.style.backgroundColor = darkMode ? '#030336' : '#f4f4f4';
+      document.body.style.color = darkMode ? '#b9b9b9' : '#222';
+    });
+
+    document.getElementById('searchBox').addEventListener('input', e => {
+      const query = e.target.value.toLowerCase();
+      document.querySelectorAll('.time-slot').forEach(slot => {
+        const text = slot.querySelector('.content').value.toLowerCase();
+        slot.style.display = text.includes(query) ? 'flex' : 'none';
+      });
+    });
+
+    initPlannerData();
+    if (currentDay) {
+      document.querySelector(`.day-buttons button[data-day="${currentDay}"]`).click();
+    } else {
+      document.querySelectorAll('.day-buttons button')[new Date().getDay()].click();
+    }
   </script>
 </body>
 </html>
